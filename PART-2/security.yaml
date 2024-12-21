@@ -1,0 +1,38 @@
+- name: Security Hardening
+  hosts: all
+  become: true
+  tasks:
+    - name: Set Up Firewall Rules
+      firewalld:
+        service: ssh
+        zone: public
+        state: enabled
+        permanent: true
+
+    - name: Allow Traffic for Web Server
+      firewalld:
+        port: 3000/tcp
+        zone: public
+        state: enabled
+        permanent: true
+      when: inventory_hostname == 'web_server'
+
+    - name: Allow Traffic for MongoDB
+      firewalld:
+        port: 27017/tcp
+        zone: public
+        state: enabled
+        permanent: true
+      when: inventory_hostname == 'db_server'
+
+    - name: Disable Root Login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+
+    - name: Restart SSH Service
+      service:
+        name: sshd
+        state: restarted

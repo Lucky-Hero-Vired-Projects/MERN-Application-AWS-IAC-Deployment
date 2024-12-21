@@ -1,1 +1,0 @@
-# MERN-Application-AWS-IAC-Deployment

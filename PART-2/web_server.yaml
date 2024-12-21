@@ -1,0 +1,23 @@
+- name: Web Server Setup
+  hosts: web
+  become: true
+  tasks:
+    - name: Install Node.js and NPM
+      yum:
+        name:
+          - nodejs
+          - npm
+        state: present
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+
+    - name: Clone MERN Application Repository
+      git:
+        repo: 'https://github.com/UnpredictablePrashant/TravelMemory'
+        dest: /var/www/mern-app
+        version: main
+
+    - name: Install Application Dependencies
+      command: npm install
+      args:
+        chdir: /var/www/mern-app

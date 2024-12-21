@@ -1,0 +1,15 @@
+- name: Deploy MERN Application
+  hosts: web
+  become: true
+  tasks:
+    - name: Configure Environment Variables
+      copy:
+        dest: /var/www/mern-app/.env
+        content: |
+          MONGO_URI=mongodb://lucky:lucky_123@{{ hostvars['db_server']['ansible_host'] }}/mernApp
+          PORT=3000
+
+    - name: Start Node.js Application
+      command: npm start
+      args:
+        chdir: /var/www/mern-app
